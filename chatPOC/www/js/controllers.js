@@ -1,8 +1,36 @@
-angular.module('starter.controllers', [])
+angular.module('starter.controllers', ['firebase'])
 
 
-.controller('LoginCtrl', function($scope, $ionicModal, $state){
+.controller('LoginCtrl', function($scope, $ionicModal, $state, $firebaseAuth){
   console.log("At login page");
+  
+  $scope.login = function(){  
+ 
+  //var ref = new Firebase("https://ionicfirebasepoc.firebaseio.com");
+  
+  // See https://firebase.google.com/docs/web/setup#project_setup for how to
+  // auto-generate this config
+  var config = {
+    apiKey: "AIzaSyCnwI0s5yEbQhqy3wxrUd_rNv9wNNGOZ-k",
+    authDomain: "ionicfirebasepoc.firebaseapp.com",
+    databaseURL: "https://ionicfirebasepoc.firebaseio.com",
+    storageBucket: "ionicfirebasepoc.appspot.com",
+    messagingSenderId: "897565733875"
+  };
+  
+  firebase.initializeApp(config);
+
+  var rootRef = firebase.database().ref();
+  
+  var authObject=firebaseAuth(rootRef);
+  
+  $scope.authObj.$authWithOAuthPopup("google").then(function(authData) {
+    console.log("Logged in as:", authData.uid);
+  }).catch(function(error) {
+    console.error("Authentication failed:", error);
+  });
+ 
+};
   
   $ionicModal.fromTemplateUrl('templates/signup.html', {
     scope: $scope
