@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $rootScope, $firebaseAuth, $firebase, $window, $ionicLoading) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -19,6 +19,78 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
+    }
+    
+    $rootScope.config = {
+      apiKey: "AIzaSyCnwI0s5yEbQhqy3wxrUd_rNv9wNNGOZ-k",
+      authDomain: "ionicfirebasepoc.firebaseapp.com",
+      databaseURL: "https://ionicfirebasepoc.firebaseio.com",
+      storageBucket: "ionicfirebasepoc.appspot.com",
+      messagingSenderId: "897565733875"
+    };
+    
+    $rootScope.firebaseApp = firebase.initializeApp($rootScope.config, "firebaseApp");
+    console.log($rootScope.firebaseApp.name); 
+    //$rootScope.rootRef = firebase.database().ref();
+    
+    //$rootScope.authObject=firebaseAuth(rootRef);
+    
+    $rootScope.facebookProvider = new firebase.auth.FacebookAuthProvider();
+    
+    $rootScope.login = function(){
+      console.log($rootScope.firebaseApp.name);
+      
+      $rootScope.firebaseApp.auth().signInWithPopup($rootScope.facebookProvider).then(function(result) {
+        // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+        var token = result.credential.accessToken;
+        // The signed-in user info.
+        var user = result.user;
+        console.log(user);
+        // ...
+      }).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        // ...
+      });
+      
+    }
+    
+    
+    $rootScope.userEmail = null;
+    $rootScope.userName = null;
+    
+    $rootScope.show = function(text) {
+      $rootScope.loading = $ionicLoading.show({
+        content: text ? text : 'Loading..',
+        animation: 'fade-in',
+        showBackdrop: true,
+        maxWidth: 200,
+        showDelay: 0
+      });
+    };
+
+    $rootScope.hide = function() {
+      $ionicLoading.hide();
+    };
+
+    $rootScope.notify = function(text) {
+      $rootScope.show(text);
+      $window.setTimeout(function() {
+        $rootScope.hide();
+      }, 1999);
+    };
+    
+    $rootScope.logout = function() {
+      
+    };
+    
+    $rootScope.checkSession = function() {
+    
     }
   });
 })
