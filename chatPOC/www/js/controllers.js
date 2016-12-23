@@ -1,19 +1,14 @@
 angular.module('starter.controllers', ['firebase'])
 
 
-.controller('LandingCtrl', function($scope, $ionicModal){
+.controller('LandingCtrl', function($scope){
   console.log("At landing page");
+  
+
 })
 
 .controller('SigninCtrl', function($rootScope, $scope, $ionicModal, $state, $firebaseAuth){
   console.log("At login page");
-  
-  $ionicModal.fromTemplateUrl('templates/signin.html', {
-    scope: $scope
-}).then(function (modal) {
-    $scope.modal = modal;
-});
-  
 })
 
 
