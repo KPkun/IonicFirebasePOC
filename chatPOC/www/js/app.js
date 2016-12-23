@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase'])
 
-.run(function($ionicPlatform, $rootScope, $firebaseAuth, $firebase, $window, $ionicLoading) {
+.run(function($ionicPlatform, $rootScope, $state, $firebase, $window, $ionicLoading) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -34,33 +34,19 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     
     $rootScope.facebookProvider = new firebase.auth.FacebookAuthProvider();
     
-    $rootScope.login = function(){
-      
-      $rootScope.firebaseApp.auth().signInWithPopup($rootScope.facebookProvider).then(function(result) {
-
-        // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-        var token = result.credential.accessToken;
-        // The signed-in user info.
-        var user = result.user;
-        console.log(user);
-        // ...
-      }).catch(function(error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        // The email of the user's account used.
-        var email = error.email;
-        // The firebase.auth.AuthCredential type that was used.
-        var credential = error.credential;
-        // Printing errors
-        console.log(errorCode);
-        console.log(errorMessage);
-        console.log(email);
-        console.log(credential);
-      });
-      
-    }
     
+    
+    $rootScope.firebaseApp.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        // User is signed in.
+        $rootScope.user = user;
+        $state.go('tab.dash');
+      } else {
+        // No user is signed in.
+        $rootScope.user=null;
+        $state.go('landing');
+      }
+    });
     
     $rootScope.userEmail = null;
     $rootScope.userName = null;
