@@ -1,7 +1,23 @@
 angular.module('starter.controllers', ['firebase'])
 
 
-.controller('LoginCtrl', function($rootScope, $scope, $ionicModal, $state, $firebaseAuth){
+.controller('LandingCtrl', function($scope, $ionicModal){
+  console.log("At landing page");
+})
+
+.controller('SigninCtrl', function($rootScope, $scope, $ionicModal, $state, $firebaseAuth){
+  console.log("At login page");
+  
+  $ionicModal.fromTemplateUrl('templates/signin.html', {
+    scope: $scope
+}).then(function (modal) {
+    $scope.modal = modal;
+});
+  
+})
+
+
+.controller('SignupCtrl', function($rootScope, $scope, $ionicModal, $state, $firebaseAuth){
   console.log("At login page");
   
   $ionicModal.fromTemplateUrl('templates/signup.html', {
@@ -9,14 +25,6 @@ angular.module('starter.controllers', ['firebase'])
 }).then(function (modal) {
     $scope.modal = modal;
 });
-
-$scope.createUser = function (user) {
-
-}
-
-$scope.signIn = function () {
-    $state.go('tab.rooms');
-}
   
 })
 

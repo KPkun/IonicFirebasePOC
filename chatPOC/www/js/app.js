@@ -31,16 +31,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     
     $rootScope.firebaseApp = firebase.initializeApp($rootScope.config, "firebaseApp");
     console.log($rootScope.firebaseApp.name); 
-    //$rootScope.rootRef = firebase.database().ref();
-    
-    //$rootScope.authObject=firebaseAuth(rootRef);
     
     $rootScope.facebookProvider = new firebase.auth.FacebookAuthProvider();
     
     $rootScope.login = function(){
-      console.log($rootScope.firebaseApp.name);
       
       $rootScope.firebaseApp.auth().signInWithPopup($rootScope.facebookProvider).then(function(result) {
+
         // This gives you a Facebook Access Token. You can use it to access the Facebook API.
         var token = result.credential.accessToken;
         // The signed-in user info.
@@ -55,7 +52,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         var email = error.email;
         // The firebase.auth.AuthCredential type that was used.
         var credential = error.credential;
-        // ...
+        // Printing errors
+        console.log(errorCode);
+        console.log(errorMessage);
+        console.log(email);
+        console.log(credential);
       });
       
     }
@@ -103,13 +104,26 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   // Each state's controller can be found in controllers.js
   $stateProvider
 
-  //Login page
-  .state('login', {
-    url: '/login',
-    templateUrl: 'templates/login.html',
-    controller: 'LoginCtrl'
+  //Landing page
+  .state('landing', {
+    url: '/landing',
+    templateUrl: 'templates/landing.html',
+    controller: 'LandingCtrl'
   })
 
+  //Signin page
+  .state('signin', {
+    url: '/signin',
+    templateUrl: 'templates/signin.html',
+    controller: 'SigninCtrl'
+  })
+  
+  //Signup page
+  .state('signup', {
+    url: '/signup',
+    templateUrl: 'templates/signup.html',
+    controller: 'SignupCtrl'
+  })
 
 
   // setup an abstract state for the tabs directive
@@ -160,6 +174,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/login');
+  $urlRouterProvider.otherwise('/landing');
 
 });

@@ -1,1 +1,35 @@
 /* Empty. Add your own CSS if you like */
+
+.bottom_fixed {
+    position: fixed !important;
+    bottom: 0 !important ;
+    width: 100%;
+}
+
+.slider{
+  height:100%;
+  text-align: center;
+}
+
+.scroll{
+  height: 100%;
+  display: block;
+}
+
+.box{
+  height:100% !important;
+  width:100%;
+  background-color: grey;
+}
+
+.slider-pager{
+  bottom:20% !important;
+}
+
+.login{
+  height: 120% !important;
+}
+
+.slider-card{
+  height: 100%;
+}

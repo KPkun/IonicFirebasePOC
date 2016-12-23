@@ -1,0 +1,1 @@
+$ ionic serve -p $PORT --nolivereload
