@@ -3,9 +3,17 @@ $ ionic serve -p $PORT --nolivereload
 
 https://ionic-firebase-poc-kaypikun.c9users.ionic
 
+ionic run ios --livereload --consolelogs
+
+cordova plugin add https://github.com/apache/cordova-plugin-whitelist
+
+http://gonehybrid.com/how-to-debug-the-white-screen-of-death-in-your-ionic-app/
+
 http://stackoverflow.com/questions/32942023/ubuntu-openjdk-8-unable-to-locate-package/33932047#33932047
 
 https://gist.github.com/wenzhixin/43cf3ce909c24948c6e7
+
+https://firebase.googleblog.com/2016/01/social-login-with-ionic_77.html
 
 ------------------------------ Add OpenJDK7------------------------------------
 
@@ -22,5 +30,3 @@ https://gist.github.com/wenzhixin/43cf3ce909c24948c6e7
 
 
 ------------------------------ Install Android SDK -----------------------------
-
-
