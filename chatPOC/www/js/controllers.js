@@ -1,32 +1,45 @@
 angular.module('starter.controllers', ['ionic.cloud'])
 
-
 .controller('LandingCtrl', function($scope, $rootScope, $state, $ionicAuth, $ionicUser){
   console.log("At landing page");
+  if($ionicAuth.isAuthenticated()){
+    console.log("Checked smartly! Already logged in!");
+    $rootScope.userName = $ionicUser.social.facebook.data.full_name;
+    $state.go('tab.dash');
+  }
   $scope.login = function(){
     console.log("started login function!");
     if(typeof cordova === "undefined" || !cordova.InAppBrowser){
-      throw new Error("You are trying to run this code for a non-cordova project, " +
-                "or did not install the cordova InAppBrowser plugin");
+      //throw new Error("You are trying to run this code for a non-cordova project, " +
+                //"or did not install the cordova InAppBrowser plugin");
+      $state.go('tab.dash');
     }else{
       $ionicAuth.login('facebook').then(function(result){
+        //console.log(result.username);
+        $rootScope.userName = $ionicUser.social.facebook.data.full_name;
         console.log("Logged In!");
+        $state.go('tab.dash');
       }).catch(function(error) {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
         // The email of the user's account used.
-  
+
         console.log(errorMessage);
       });
-      console.log($ionicUser.social.facebook.data.full_name);
     }
   }
-  
+
   $scope.logout = function(){
     console.log("Logging out");
     $ionicAuth.logout();
+    $state.go('landing');
   }
+
+  $scope.openBrowser = function() {
+    window.open('http://ngcordova.com', '_blank', 'location=yes');
+ }
+
 })
 
 .controller('SigninCtrl', function($rootScope, $scope, $ionicModal, $state, $ionicAuth, $ionicUser){
@@ -36,12 +49,21 @@ angular.module('starter.controllers', ['ionic.cloud'])
 
 .controller('SignupCtrl', function($rootScope, $scope, $ionicModal, $state, $firebaseAuth){
   console.log("At login page");
-  
+
 })
 
-.controller('DashCtrl', function($scope, $rootScope) {
+.controller('DashCtrl', function($scope, $rootScope, $state, $ionicAuth, $ionicUser) {
+  //$scope.username = $ionicUser.social.facebook.data.full_name;
+  console.log("Is Authenticated: "+$ionicAuth.isAuthenticated());
+  console.log("everything: "+$ionicUser);
+  console.log("untill facebook: "+$ionicUser.social.facebook);
+  console.log("untill data: "+$ionicUser.social.facebook.data);
+  console.log("untill username: "+$ionicUser.social.facebook.data.full_name);
+  console.log("rootscope username: "+$rootScope.userName);
   $scope.logout = function(){
-   
+    console.log("Logging out");
+    $ionicAuth.logout();
+    $state.go('landing');
   }
 })
 

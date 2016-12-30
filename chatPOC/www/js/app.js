@@ -28,7 +28,7 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-    
+
     $rootScope.config = {
       apiKey: "AIzaSyCnwI0s5yEbQhqy3wxrUd_rNv9wNNGOZ-k",
       authDomain: "ionicfirebasepoc.firebaseapp.com",
@@ -36,10 +36,10 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
       storageBucket: "ionicfirebasepoc.appspot.com",
       messagingSenderId: "897565733875"
     };
-    
+
     $rootScope.userEmail = null;
     $rootScope.userName = null;
-    
+
     $rootScope.show = function(text) {
       $rootScope.loading = $ionicLoading.show({
         content: text ? text : 'Loading..',
@@ -60,13 +60,13 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
         $rootScope.hide();
       }, 1999);
     };
-    
+
     $rootScope.logout = function() {
-      
+
     };
-    
+
     $rootScope.checkSession = function() {
-    
+
     }
   });
 })
@@ -92,7 +92,7 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
     templateUrl: 'templates/signin.html',
     controller: 'SigninCtrl'
   })
-  
+
   //Signup page
   .state('signup', {
     url: '/signup',
