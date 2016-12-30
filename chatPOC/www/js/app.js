@@ -5,7 +5,15 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase'])
+angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'starter.services', 'firebase'])
+
+.config(function($ionicCloudProvider) {
+  $ionicCloudProvider.init({
+    "core": {
+      "app_id": "2eb69b30"
+    }
+  });
+})
 
 .run(function($ionicPlatform, $rootScope, $state, $firebase, $window, $ionicLoading) {
   $ionicPlatform.ready(function() {
@@ -28,25 +36,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       storageBucket: "ionicfirebasepoc.appspot.com",
       messagingSenderId: "897565733875"
     };
-    
-    $rootScope.firebaseApp = firebase.initializeApp($rootScope.config, "firebaseApp");
-    console.log($rootScope.firebaseApp.name); 
-    
-    $rootScope.facebookProvider = new firebase.auth.FacebookAuthProvider();
-    
-    
-    
-    $rootScope.firebaseApp.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        // User is signed in.
-        $rootScope.user = user;
-        $state.go('tab.dash');
-      } else {
-        // No user is signed in.
-        $rootScope.user=null;
-        $state.go('landing');
-      }
-    });
     
     $rootScope.userEmail = null;
     $rootScope.userName = null;

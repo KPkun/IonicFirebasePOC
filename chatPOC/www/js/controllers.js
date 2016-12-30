@@ -1,54 +1,36 @@
-angular.module('starter.controllers', ['firebase'])
+angular.module('starter.controllers', ['ionic.cloud'])
 
 
-.controller('LandingCtrl', function($scope, $rootScope){
+.controller('LandingCtrl', function($scope, $rootScope, $state, $ionicAuth, $ionicUser){
   console.log("At landing page");
-  
-  $rootScope.firebaseApp.auth().onAuthStateChanged(function(user) {
-    if (user) {
-      // User is signed in.
-      $rootScope.user = user;
-      console.log("Auth state changed Logged in");
-      $state.go('tab.dash');
-    } else {
-      // No user is signed in.
-      $rootScope.user=null;
-      console.log("Auth state changed Logged out");
-      $state.go('landing');
-    }
-  });
-
-})
-
-.controller('SigninCtrl', function($rootScope, $scope, $ionicModal, $state){
-  console.log("At login page");
-  
   $scope.login = function(){
-      
-      $rootScope.firebaseApp.auth().signInWithRedirect($rootScope.facebookProvider).then(function(result) {
-
-        // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-        var token = result.credential.accessToken;
-        // The signed-in user info.
-        var user = result.user;
-        console.log(user);
-        // ...
+    console.log("started login function!");
+    if(typeof cordova === "undefined" || !cordova.InAppBrowser){
+      throw new Error("You are trying to run this code for a non-cordova project, " +
+                "or did not install the cordova InAppBrowser plugin");
+    }else{
+      $ionicAuth.login('facebook').then(function(result){
+        console.log("Logged In!");
       }).catch(function(error) {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
         // The email of the user's account used.
-        var email = error.email;
-        // The firebase.auth.AuthCredential type that was used.
-        var credential = error.credential;
-        // Printing errors
-        console.log(errorCode);
+  
         console.log(errorMessage);
-        console.log(email);
-        console.log(credential);
       });
-      
+      console.log($ionicUser.social.facebook.data.full_name);
     }
+  }
+  
+  $scope.logout = function(){
+    console.log("Logging out");
+    $ionicAuth.logout();
+  }
+})
+
+.controller('SigninCtrl', function($rootScope, $scope, $ionicModal, $state, $ionicAuth, $ionicUser){
+  console.log("At login page");
 })
 
 
@@ -59,11 +41,7 @@ angular.module('starter.controllers', ['firebase'])
 
 .controller('DashCtrl', function($scope, $rootScope) {
   $scope.logout = function(){
-    $rootScope.firebaseApp.auth().signOut().then(function() {
-      // Sign-out successful.
-    }, function(error) {
-      // An error happened.
-    });
+   
   }
 })
 
