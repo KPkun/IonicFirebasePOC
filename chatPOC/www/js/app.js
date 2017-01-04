@@ -67,7 +67,8 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
 
     $rootScope.checkSession = function() {
 
-    }
+    }   
+
   });
 })
 
