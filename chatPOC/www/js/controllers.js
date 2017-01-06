@@ -24,10 +24,23 @@ angular.module('starter.controllers', ['ionic.cloud'])
 
   $scope.fakelogin = function(){
     console.log("fake logging in!");
-    $rootScope.userName = "Default User";
     var fakeloginmsg = "You din't actually log in! This is a fake login. A simulation. This environment doesn't support loging in.";
     $scope.showError(fakeloginmsg);
     $state.go('tab.dash');
+    $rootScope.setUserName("Default User");
+
+    $scope.usersInfoRef = $rootScope.database.ref().child('user_uuid/');
+    // $scope.usersInfoRef.push().set($rootScope.userName);
+    // $scope.usersInfoRef.push().set({usei_id:$rootScope.userName});
+
+    // $scope.namelessMessagesRef = $rootScope.database.ref().child('nameless_messages/DefaultUser/');
+    // $scope.namelessMessagesRef.push().set({is_agent:false, sender_uid:"AbcdEjY0FKNMO6rPRpOTEgFKuM33",text:"Displayed?",timestamp:1483606838973});
+
+    // $scope.namelessUsersInfo = $rootScope.database.ref().child('nameless_users_info/DefaultUser/');
+    // $scope.namelessUsersInfo.push().set({last_agent_uid:""});
+
+    $scope.namelessOpenRoomsUA = $rootScope.database.ref().child('nameless_open_rooms/DefaultUser.updated_at');
+    $scope.namelessOpenRoomsUA.push().set(1483706261515);
   }
 
   $scope.login = function(){
@@ -107,7 +120,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
   }
 })
 
-.controller('RoomsCtrl', function($scope, Chats) {
+.controller('RoomsCtrl', function($scope, Rooms) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -116,14 +129,34 @@ angular.module('starter.controllers', ['ionic.cloud'])
   //$scope.$on('$ionicView.enter', function(e) {
   //});
 
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
+  $scope.rooms = Rooms.all();
+  $scope.remove = function(room) {
+    Rooms.remove(room);
   };
 })
 
-.controller('RoomChatCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
+.controller('ChatCtrl', function($scope, $rootScope, $stateParams, Rooms) {
+  $scope.room = Rooms.get($stateParams.roomId);
+  $scope.userName = $rootScope.userName;
+  console.log($scope.userName);
+
+  $scope.chat = null;
+  $scope.queryOpenRooms = $rootScope.database.ref("/nameless_open_rooms/");
+  $scope.queryAgents = $rootScope.database.ref("/agents_info/");
+
+  $scope.chatRef = $rootScope.database.ref().child('nameless_messages/'+$rootScope.userName);
+
+  console.log($scope.queryOpenRooms.text);
+  console.log($scope.queryAgents);
+
+  $scope.sendChat = function(chat){
+    $scope.chats = {
+      user : $rootScope.userName,
+      message : chat.message
+    };
+    $scope.chatRef.push().set(chat);
+    chat.message = "";
+  }
 })
 
 .controller('InfoCtrl', function($scope) {

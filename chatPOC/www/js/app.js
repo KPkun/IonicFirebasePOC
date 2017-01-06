@@ -36,9 +36,17 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
       storageBucket: "ionicfirebasepoc.appspot.com",
       messagingSenderId: "897565733875"
     };
+    $rootScope.firebaseApp = firebase.initializeApp($rootScope.config);
+
+    $rootScope.database = $rootScope.firebaseApp.database();
 
     $rootScope.userEmail = null;
     $rootScope.userName = null;
+
+    $rootScope.setUserName = function(newUserName){
+      $rootScope.userName = newUserName;
+      return $rootScope.userName;
+    }
 
     $rootScope.show = function(text) {
       $rootScope.loading = $ionicLoading.show({
@@ -67,7 +75,7 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
 
     $rootScope.checkSession = function() {
 
-    }   
+    }
 
   });
 })
@@ -130,11 +138,11 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
       }
     })
     .state('tab.chat', {
-      url: '/rooms/:chatId',
+      url: '/rooms/:roomId',
       views: {
         'tab-rooms': {
           templateUrl: 'templates/room-chat.html',
-          controller: 'RoomChatCtrl'
+          controller: 'ChatCtrl'
         }
       }
     })

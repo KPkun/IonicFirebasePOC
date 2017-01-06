@@ -1,47 +1,47 @@
 angular.module('starter.services', ['ionic.cloud'])
 
-.factory('Chats', function() {
+.factory('Rooms', function() {
   // Might use a resource here that returns a JSON array
 
   // Some fake testing data
-  var chats = [{
+  var rooms = [{
     id: 0,
     name: 'Reservations',
     lastText: 'Want to book hotels? restaurants?',
-    face: 'img/reservation.png'
+    logo: 'img/reservation.png'
   }, {
     id: 1,
     name: 'Tickets',
     lastText: 'Need tickets for shows? events?',
-    face: 'img/tickets.png'
+    logo: 'img/tickets.png'
   }, {
     id: 2,
     name: 'Transport',
     lastText: 'Any questions regarding moving around in Japan',
-    face: 'img/transport.png'
+    logo: 'img/transport.png'
   }, {
     id: 3,
     name: 'Places',
     lastText: 'We can suggest you the best places to visit',
-    face: 'img/places.jpg'
+    logo: 'img/places.jpg'
   }, {
     id: 4,
     name: 'Others',
     lastText: 'Any special requests?',
-    face: 'img/others.png'
+    logo: 'img/others.png'
   }];
 
   return {
     all: function() {
-      return chats;
+      return rooms;
     },
-    remove: function(chat) {
-      chats.splice(chats.indexOf(chat), 1);
+    remove: function(room) {
+      rooms.splice(rooms.indexOf(room), 1);
     },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
+    get: function(roomId) {
+      for (var i = 0; i < rooms.length; i++) {
+        if (rooms[i].id === parseInt(roomId)) {
+          return rooms[i];
         }
       }
       return null;
