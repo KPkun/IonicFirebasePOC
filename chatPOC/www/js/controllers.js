@@ -18,7 +18,8 @@ angular.module('starter.controllers', ['ionic.cloud'])
 
   if($ionicAuth.isAuthenticated()){
     console.log("Checked smartly! Already logged in!");
-    //$rootScope.userName = $ionicUser.social.facebook.data.full_name;
+    $rootScope.userName = $ionicUser.social.facebook.data.full_name;
+    $rootScope.user_uuid = $ionicUser.id;
     $state.go('tab.dash');
   }
 
@@ -28,7 +29,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
     $scope.showError(fakeloginmsg);
     $state.go('tab.dash');
     $rootScope.setUserName("Default User");
-
+    $rootScope.user_uuid = "randomuuid";
     $scope.usersInfoRef = $rootScope.database.ref().child('user_uuid/');
     // $scope.usersInfoRef.push().set($rootScope.userName);
     // $scope.usersInfoRef.push().set({usei_id:$rootScope.userName});
@@ -39,8 +40,8 @@ angular.module('starter.controllers', ['ionic.cloud'])
     // $scope.namelessUsersInfo = $rootScope.database.ref().child('nameless_users_info/DefaultUser/');
     // $scope.namelessUsersInfo.push().set({last_agent_uid:""});
 
-    $scope.namelessOpenRoomsUA = $rootScope.database.ref().child('nameless_open_rooms/DefaultUser.updated_at');
-    $scope.namelessOpenRoomsUA.push().set(1483706261515);
+    // $scope.namelessOpenRoomsUA = $rootScope.database.ref().child('nameless_open_rooms/DefaultUser.updated_at');
+    // $scope.namelessOpenRoomsUA.push().set(1483706261515);
   }
 
   $scope.login = function(){
@@ -59,6 +60,8 @@ angular.module('starter.controllers', ['ionic.cloud'])
       $ionicAuth.login('facebook').then(function(result){
         //console.log(result.username);
         $rootScope.userName = $ionicUser.social.facebook.data.full_name;
+        $rootScope.user_uuid = $ionicUser.id;
+        console.log("user uuid is: "+$rootScope.user_uuid);
         console.log("Logged In!");
         var info =typeof cordova;
         $scope.showError(info);
@@ -140,22 +143,31 @@ angular.module('starter.controllers', ['ionic.cloud'])
   $scope.userName = $rootScope.userName;
   console.log($scope.userName);
 
-  $scope.chat = null;
-  $scope.queryOpenRooms = $rootScope.database.ref("/nameless_open_rooms/");
+  $scope.chatMessage = "";
+  $scope.queryOpenRooms = $rootScope.database.ref("/nameless_open_rooms/"+$rootScope.user_uuid);
+  $scope.queryNamelessMessages = $rootScope.database.ref().child('nameless_messages/'+$rootScope.user_uuid+'/');
   $scope.queryAgents = $rootScope.database.ref("/agents_info/");
 
-  $scope.chatRef = $rootScope.database.ref().child('nameless_messages/'+$rootScope.userName);
+  $scope.updateLastSeen = function(){
+    $scope.queryOpenRooms.update({user_read_at:firebase.database.ServerValue.TIMESTAMP});
+    console.log("updated last seen");
+  }
 
-  console.log($scope.queryOpenRooms.text);
-  console.log($scope.queryAgents);
+  $scope.sendChat = function(chatMessage){
+    if($scope.chatMessage!=""){
+      $scope.queryNamelessMessages.push().set({is_agent:false, sender_uid:$rootScope.user_uuid,text:$scope.chatMessage,timestamp:firebase.database.ServerValue.TIMESTAMP});
+      console.log("sent message");
+      $scope.chatMessage = "";
+      $scope.queryOpenRooms.update({updated_at:firebase.database.ServerValue.TIMESTAMP});
+      console.log("updated, updated at");
+    }
+  }
 
-  $scope.sendChat = function(chat){
-    $scope.chats = {
-      user : $rootScope.userName,
-      message : chat.message
-    };
-    $scope.chatRef.push().set(chat);
-    chat.message = "";
+  $scope.isWriting = function(chatMessage){
+    if(chatMessage != ""){
+      console.log("user is writing");
+      console.log("User input text :"+chatMessage);
+    }
   }
 })
 
