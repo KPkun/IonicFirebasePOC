@@ -147,6 +147,15 @@ angular.module('starter.controllers', ['ionic.cloud'])
   $scope.queryOpenRooms = $rootScope.database.ref("/nameless_open_rooms/"+$rootScope.user_uuid);
   $scope.queryNamelessMessages = $rootScope.database.ref().child('nameless_messages/'+$rootScope.user_uuid+'/');
   $scope.queryAgents = $rootScope.database.ref("/agents_info/");
+  $scope.queryChatMessages = $rootScope.database.ref('nameless_messages/'+$rootScope.user_uuid);
+
+  $scope.queryChatMessages.on('value',function(snapshot){
+    $scope.chats = snapshot.val();
+    console.log($scope.chats);
+    for (chat in $scope.chats){
+      console.log(chat);
+    }
+  });
 
   $scope.updateLastSeen = function(){
     $scope.queryOpenRooms.update({user_read_at:firebase.database.ServerValue.TIMESTAMP});
@@ -160,14 +169,22 @@ angular.module('starter.controllers', ['ionic.cloud'])
       chat.message = "";
       $scope.queryOpenRooms.update({updated_at:firebase.database.ServerValue.TIMESTAMP});
       console.log("updated, updated at");
+      $scope.queryOpenRooms.update({is_user_writing:false});
+      $scope.queryOpenRooms.update({user_input_text:chat.message});
     }
-    // chatMessage = "";
   }
 
   $scope.isWriting = function(chat){
     if(chat.message != ""){
+      $scope.queryOpenRooms.update({is_user_writing:true});
+      $scope.queryOpenRooms.update({user_input_text:chat.message});
       console.log("user is writing");
       console.log("User input text :"+chat.message);
+    }
+    else{
+      $scope.queryOpenRooms.update({is_user_writing:false});
+      $scope.queryOpenRooms.update({user_input_text:chat.message});
+      console.log("user stops writing");
     }
   }
 })
