@@ -21,7 +21,7 @@
       <div class="list">
         <div class="item item-input-inset">
           <label class="item-input-wrapper">
-            <input type="text" placeholder="message" ng-model="chatMessage" ng-change="isWriting(chat)" ng-minlength="1">
+            <input type="text" placeholder="message" ng-model="chat.message" ng-change="isWriting(chat)">
           </label>
           <button class="button button-positive ion ion-chatbubbles" ng-click="sendChat(chat)">
           </button>

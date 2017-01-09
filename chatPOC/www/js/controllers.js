@@ -143,7 +143,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
   $scope.userName = $rootScope.userName;
   console.log($scope.userName);
 
-  $scope.chatMessage = "";
+  // $scope.chat = "";
   $scope.queryOpenRooms = $rootScope.database.ref("/nameless_open_rooms/"+$rootScope.user_uuid);
   $scope.queryNamelessMessages = $rootScope.database.ref().child('nameless_messages/'+$rootScope.user_uuid+'/');
   $scope.queryAgents = $rootScope.database.ref("/agents_info/");
@@ -153,20 +153,21 @@ angular.module('starter.controllers', ['ionic.cloud'])
     console.log("updated last seen");
   }
 
-  $scope.sendChat = function(chatMessage){
-    if($scope.chatMessage!=""){
-      $scope.queryNamelessMessages.push().set({is_agent:false, sender_uid:$rootScope.user_uuid,text:$scope.chatMessage,timestamp:firebase.database.ServerValue.TIMESTAMP});
+  $scope.sendChat = function(chat){
+    if(chat != null && chat.message !=""){
+      $scope.queryNamelessMessages.push().set({is_agent:false, sender_uid:$rootScope.user_uuid,text:chat.message,timestamp:firebase.database.ServerValue.TIMESTAMP});
       console.log("sent message");
-      $scope.chatMessage = "";
+      chat.message = "";
       $scope.queryOpenRooms.update({updated_at:firebase.database.ServerValue.TIMESTAMP});
       console.log("updated, updated at");
     }
+    // chatMessage = "";
   }
 
-  $scope.isWriting = function(chatMessage){
-    if(chatMessage != ""){
+  $scope.isWriting = function(chat){
+    if(chat.message != ""){
       console.log("user is writing");
-      console.log("User input text :"+chatMessage);
+      console.log("User input text :"+chat.message);
     }
   }
 })
