@@ -151,10 +151,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
 
   $scope.queryChatMessages.on('value',function(snapshot){
     $scope.chats = snapshot.val();
-    console.log($scope.chats);
-    for (chat in $scope.chats){
-      console.log(chat);
-    }
+    console.log("new chat message");
   });
 
   $scope.updateLastSeen = function(){

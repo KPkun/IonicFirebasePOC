@@ -5,18 +5,21 @@
   The Friends service returns an array of friend data
 -->
 <ion-view view-title="{{room.name}}" ng-init="updateLastSeen()">
-  <ion-content class="padding">
+  <ion-content class="padding has-footer">
     <!-- <img ng-src="{{room.logo}}" style="width: 64px; height: 64px">
     <p>
       {{room.lastText}}
     </p> -->
     <div class="list">
-        <a class="item item-avatar" ng-repeat-"chat in chats">
+        <a class="item item-avatar" ng-repeat="chat in chats">
           <img>
           <!-- <h2>{{chat.user}}</h2>-->
           <p>{{chat.text}}</p>
         </a>
     </div>
+  </ion-content>
+
+  <div style="position: absolute; bottom: 0px; width: 100%">
     <form>
       <div class="list">
         <div class="item item-input-inset">
@@ -28,5 +31,5 @@
         </div>
       </div>
     </form>
-  </ion-content>
+  </div>
 </ion-view>
