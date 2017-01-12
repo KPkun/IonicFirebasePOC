@@ -147,12 +147,12 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
       }
     })
 
-  .state('tab.info', {
-    url: '/info',
+  .state('tab.explore', {
+    url: '/explore',
     views: {
-      'tab-info': {
-        templateUrl: 'templates/tab-info.html',
-        controller: 'InfoCtrl'
+      'tab-explore': {
+        templateUrl: 'templates/tab-explore.html',
+        controller: 'ExploreCtrl'
       }
     }
   });

@@ -186,8 +186,19 @@ angular.module('starter.controllers', ['ionic.cloud'])
   }
 })
 
-.controller('InfoCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
+.controller('ExploreCtrl', function($scope) {
+  $scope.posts = $http.get('https://fastjapan.com/en/wp-json/wp/v2/posts');
+  console.log($scope.posts);
+})
+
+.directive('hideTabs', function($rootScope) {
+  return {
+      restrict: 'A',
+      link: function($scope, $el) {
+          $rootScope.hideTabs = 'tabs-item-hide';
+          $scope.$on('$destroy', function() {
+              $rootScope.hideTabs = '';
+          });
+      }
   };
 });
