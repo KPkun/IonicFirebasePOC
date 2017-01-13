@@ -123,7 +123,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
   }
 })
 
-.controller('RoomsCtrl', function($scope, Rooms) {
+.controller('RoomsCtrl', function($scope, $rootScope, Rooms) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -132,13 +132,22 @@ angular.module('starter.controllers', ['ionic.cloud'])
   //$scope.$on('$ionicView.enter', function(e) {
   //});
 
+  $rootScope.$on('$ionicView.beforeEnter', function() {
+    $rootScope.hideTabs = false;
+  });
+
   $scope.rooms = Rooms.all();
   $scope.remove = function(room) {
     Rooms.remove(room);
   };
 })
 
-.controller('ChatCtrl', function($scope, $rootScope, $stateParams, Rooms) {
+.controller('ChatCtrl', function($scope, $rootScope, $stateParams, $ionicScrollDelegate, Rooms) {
+
+  $rootScope.$on('$ionicView.beforeEnter', function() {
+    $rootScope.hideTabs = true;
+  });
+
   $scope.room = Rooms.get($stateParams.roomId);
   $scope.userName = $rootScope.userName;
   console.log($scope.userName);
@@ -149,12 +158,20 @@ angular.module('starter.controllers', ['ionic.cloud'])
   $scope.queryAgents = $rootScope.database.ref("/agents_info/");
   $scope.queryChatMessages = $rootScope.database.ref('nameless_messages/'+$rootScope.user_uuid);
 
+  $scope.updateChats = function(chatsJson, value){
+    chatsJson = value;
+    console.log("updating via function");
+    console.log(chatsJson);
+  }
+
   $scope.queryChatMessages.on('value',function(snapshot){
     $scope.chats = snapshot.val();
+    $scope.updateChats($scope.chats, snapshot.val());
     console.log("new chat message");
   });
 
-  $scope.updateLastSeen = function(){
+  $scope.initMethods = function(){
+    $ionicScrollDelegate.scrollBottom();
     $scope.queryOpenRooms.update({user_read_at:firebase.database.ServerValue.TIMESTAMP});
     console.log("updated last seen");
   }
