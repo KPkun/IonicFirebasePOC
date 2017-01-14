@@ -47,4 +47,43 @@ angular.module('starter.services', ['ionic.cloud'])
       return null;
     }
   };
+})
+
+
+.factory('ChatMessages', function($rootScope) {
+
+  var queryChatMessages = $rootScope.database.ref('nameless_messages/'+$rootScope.user_uuid);
+  // queryChatMessages.on('value',function(snapshot){
+  //   $rootScope.chats = snapshot.val();
+  //   console.log("inside service");
+  //   console.log($rootScope.chats);
+  //   return $rootScope.chats;
+  // });
+	return {
+    all: function(){
+      queryChatMessages.on('value',function(snapshot){
+        var chats = snapshot.val();
+        console.log("inside service");
+        console.log(chats);
+        return chats;
+      });
+    },
+    once: function(){
+      queryChatMessages.once('value').then(function(snapshot){
+        var chats = snapshot.val();
+        console.log(chats);
+        return chats;
+      });
+    }
+  // $rootScope.chats;
+  };
+})
+
+
+.factory('WpApi', function() {
+	return {
+    getChats: function(x){
+      return x;
+    }
+  };
 });

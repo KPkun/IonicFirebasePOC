@@ -2,7 +2,7 @@
   <ion-content>
     <ion-list>
       <!-- <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="chat in chats" type="item-text-wrap" href="#/tab/rooms/{{chat.id}}"> -->
-      <ion-item class="item item-thumbnail-left" ng-repeat="room in rooms" type="item-text-wrap" href="#/tab/rooms/{{room.id}}">
+      <ion-item class="item item-thumbnail-left" ng-repeat="room in rooms" type="item-text-wrap" href="#/tab/rooms/{{room.id}}" cache-view="false">
         <img ng-src="{{room.logo}}">
         <h3>{{room.name}}</h3>
         <p>{{room.lastText}}</p>

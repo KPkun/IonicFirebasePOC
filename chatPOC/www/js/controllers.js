@@ -101,7 +101,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
 })
 
 
-.controller('SignupCtrl', function($rootScope, $scope, $ionicModal, $state, $firebaseAuth){
+.controller('SignupCtrl', function($rootScope, $scope, $ionicModal, $state){
   console.log("At login page");
 })
 
@@ -142,7 +142,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
   };
 })
 
-.controller('ChatCtrl', function($scope, $rootScope, $stateParams, $ionicScrollDelegate, Rooms) {
+.controller('ChatCtrl', function($scope, $rootScope, $stateParams, $state, $ionicScrollDelegate, $window, Rooms, ChatMessages) {
 
   $rootScope.$on('$ionicView.beforeEnter', function() {
     $rootScope.hideTabs = true;
@@ -158,19 +158,24 @@ angular.module('starter.controllers', ['ionic.cloud'])
   $scope.queryAgents = $rootScope.database.ref("/agents_info/");
   $scope.queryChatMessages = $rootScope.database.ref('nameless_messages/'+$rootScope.user_uuid);
 
-  $scope.updateChats = function(chatsJson, value){
-    chatsJson = value;
-    console.log("updating via function");
-    console.log(chatsJson);
+  $scope.getChats = function(){
+    $scope.queryChatMessages.once('value').then(function(snapshot){
+      $scope.chats = snapshot.val();
+    });
   }
 
   $scope.queryChatMessages.on('value',function(snapshot){
     $scope.chats = snapshot.val();
-    $scope.updateChats($scope.chats, snapshot.val());
     console.log("new chat message");
+    for (chat in $scope.chats){
+      console.log(chat);
+    }
+    $scope.getChats();
   });
 
   $scope.initMethods = function(){
+    console.log("get chats on init");
+    $scope.getChats();
     $ionicScrollDelegate.scrollBottom();
     $scope.queryOpenRooms.update({user_read_at:firebase.database.ServerValue.TIMESTAMP});
     console.log("updated last seen");
@@ -184,7 +189,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
       $scope.queryOpenRooms.update({updated_at:firebase.database.ServerValue.TIMESTAMP});
       console.log("updated, updated at");
       $scope.queryOpenRooms.update({is_user_writing:false});
-      $scope.queryOpenRooms.update({user_input_text:chat.message});
+      $scope.queryOpenRooms.update({user_input_text:""});
     }
   }
 
@@ -203,9 +208,25 @@ angular.module('starter.controllers', ['ionic.cloud'])
   }
 })
 
-.controller('ExploreCtrl', function($scope) {
-  $scope.posts = $http.get('https://fastjapan.com/en/wp-json/wp/v2/posts');
-  console.log($scope.posts);
+.controller('ExploreCtrl', function($scope, $http) {
+  $http({
+    method: 'GET',
+    url: 'https://fastjapan.com/en/wp-json/wp/v2/posts'
+  }).then(function successCallback(response) {
+      // this callback will be called asynchronously
+      // when the response is available
+      $scope.posts = response;
+      console.log("API response success!");
+      console.log($scope.$posts);
+      for (post in $scope.posts){
+        console.log($scope.posts.title);
+      }
+    }, function errorCallback(response) {
+      // called asynchronously if an error occurs
+      // or server returns response with an error status.
+      console.log("API response FAIL!");
+      console.log("response");
+    });
 })
 
 .directive('hideTabs', function($rootScope) {

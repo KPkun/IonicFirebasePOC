@@ -151,6 +151,7 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
     })
     .state('tab.chat', {
       url: '/rooms/:roomId',
+      params: { cache: null },
       views: {
         'tab-rooms': {
           templateUrl: 'templates/room-chat.html',
