@@ -1,0 +1,114 @@
+
+#home-feat-text {
+    max-height: 85%;
+}
+
+nav.fly-nav-menu ul li a {
+    width: 100%;
+}
+
+nav.fly-nav-menu ul li.menu-item-has-children:after,
+nav.fly-nav-menu ul li.menu-item-has-children.tog-minus:after {
+    width: 100%;
+    min-height: 35px;
+    text-align: right;
+}
+
+.fj-popular-rank-wrap {
+    height: 24px;
+    width: 24px;
+    line-height: 24px;
+    font-family: arial;
+    font-size: 16px;
+    position: absolute;
+    background: red;
+    color: white;
+    text-align: center;
+    border: 1px solid white;
+    z-index: 1;
+}
+
+@media screen and (max-width: 1099px) {
+    .fj-popular-rank-wrap {
+        display: block;
+    }
+}
+
+@media screen and (min-width: 1100px) {
+    .fj-popular-rank-wrap {
+        display: none;
+    }
+}
+
+.fj-popular-rank {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+}
+
+.fj-share {
+    width: 27%;
+    display: inline-block;
+    max-width: 350px;
+}
+
+.fj-share img {
+    width: 45px;
+    height: 45px;
+}
+
+.fj-facebook-share {
+    background: #3B579D;
+}
+
+.fj-twitter-share {
+    background: #55acee;
+}
+
+.fj-whatsapp-share {
+    background: #65BC54;
+}
+
+.fj-line-share {
+    background: #00B900;
+}
+
+img.fj-line-at {
+    margin-top: 10px;
+    content: url("/shared/images/line_banner_pc.png");
+}
+
+@media screen and (max-width: 767px) {
+    .fj-share {
+        width: 26%;
+    }
+
+    .fj-share img {
+        width: 35px;
+        height: 35px;
+    }
+
+    img.fj-line-at {
+        margin-top: 10px;
+        content: url("/shared/images/line_banner_sp.png");
+    }
+}
+
+@media screen and (max-width: 479px) {
+    #home-feat-text h2.stand-title {
+        font-size: 1.3rem;
+    }
+
+    .feat-top2-left-text h2.stand-title {
+        font-size: 1.3rem;
+    }
+
+    .fj-share {
+        width: 25%;
+    }
+
+    .fj-share img {
+        width: 29px;
+        height: 29px;
+    }
+}

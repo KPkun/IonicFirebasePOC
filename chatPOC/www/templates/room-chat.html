@@ -5,32 +5,32 @@
   The Friends service returns an array of friend data
 -->
 <ion-view view-title="{{room.name}}" ng-init="initMethods()" cache-view="false">
-  <ion-content class="padding has-footer" style="height:80%">
+  <ion-content class="padding has-footer" style="height:80%" overflow-scroll="true">
     <!-- <img ng-src="{{room.logo}}" style="width: 64px; height: 64px">
     <p>
       {{room.lastText}}
     </p> -->
     <div class="list" ng-repeat="chat in chats">
-      <a class="item item-avatar-left" ng-if="chat.is_agent==true">
+      <div class="item item-avatar-left" ng-if="chat.is_agent==true" style="z-index:1000 !important;">
         <img src="./img/default_profile_pic.jpg">
         <div>
           <ul>
             <li><h2>{{chat.sender_uid}}</h2></li>
-            <li><p>{{chat.text}}</p></li>
+            <li><span ng-bind-html='toTrustedHTML(renderMessage(chat.text))'></span></li>
             <li><p style="font-size:8px;">Time: {{chat.timestamp}}</p></li>
           </ul>
         </div>
-      </a>
-      <a class="item item-avatar-right" ng-if="chat.is_agent==false">
+      </div>
+      <div class="item item-avatar-right" ng-if="chat.is_agent==false">
         <img src="./img/default_profile_pic.jpg">
         <div style = "float:right">
           <ul>
             <li><h2 style="float:right">{{chat.sender_uid}}</h2></li><br>
-            <li><p style="float:right">{{chat.text}}</p></li><br>
+            <li style="float:right"><span ng-bind-html='toTrustedHTML(renderMessage(chat.text))'></span></li><br>
             <li><p style="float:right; font-size:8px">Time: {{chat.timestamp}}</p></li>
           </ul>
         </div>
-      </a>
+      </div>
     </div>
   </ion-content>
 

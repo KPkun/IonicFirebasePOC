@@ -1,6 +1,6 @@
 /* Empty. Add your own CSS if you like */
 
-.bottom_fixed {
+/*.bottom_fixed {
     position: fixed !important;
     bottom: 0 !important ;
     width: 100%;
@@ -36,4 +36,11 @@
 
 .slider-card{
   height: 100%;
+}*/
+
+body {
+ -webkit-user-select: auto !important;
+.scroll {
+    -webkit-user-select: inherit;
+  }
 }

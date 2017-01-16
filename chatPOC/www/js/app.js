@@ -168,7 +168,19 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
         controller: 'ExploreCtrl'
       }
     }
-  });
+  })
+
+  .state('tab.article', {
+    url: '/explore/:articleId',
+    views: {
+      'tab-explore': {
+        templateUrl: 'templates/explore-article.html',
+        controller: 'ArticleCtrl'
+      }
+    }
+  })
+
+  ;
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/landing');

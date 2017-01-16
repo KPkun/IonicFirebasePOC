@@ -1,0 +1,24 @@
+
+.fj-reference {
+    font-size: 8pt;
+    color: #bbb;
+}
+
+.fj-reference a {
+    color: #bbb;
+}
+
+.fj-reference a:hover, .fj-reference a:active, .fj-reference a:visited {
+    color: #bbb;
+    text-decoration: underline;
+}
+
+.fj-information {
+    background: aliceblue;
+    border-radius: 5px;
+    padding: 25px 10px 10px 10px;
+}
+
+#content-main p.fj-description {
+    color: #80878c;
+}

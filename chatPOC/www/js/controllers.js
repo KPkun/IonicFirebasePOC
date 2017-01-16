@@ -1,6 +1,6 @@
 angular.module('starter.controllers', ['ionic.cloud'])
 
-.controller('LandingCtrl', function($scope, $rootScope, $state, $ionicAuth, $ionicUser, $ionicPopup){
+.controller('LandingCtrl', function($scope, $rootScope, $state, $ionicAuth, $ionicUser, $ionicPopup, $http, $sce){
   console.log("At landing page");
 
   // An alert dialog
@@ -94,6 +94,38 @@ angular.module('starter.controllers', ['ionic.cloud'])
     window.open('https://fastjapan.com', '_blank', 'location=yes');
  }
 
+ $scope.iFramelyResult = function(message){
+   var iFramelyRequestURL = "http://iframe.ly/api/oembed?url="+message+"&api_key=31d4151b543e7f5df7c092&iframe=true";
+
+   $http({
+     method: 'GET',
+     url: iFramelyRequestURL
+   }).then(function successCallback(response) {
+       // this callback will be called asynchronously
+       // when the response is available
+       // $scope.posts = response.data;
+       console.log("iFramely API response success! landing");
+       console.log(response.data);
+      //  return response.data;
+       $scope.item = response.data.html;
+      console.log(response.data.html);
+      var item = $scope.item;
+     }, function errorCallback(response) {
+       // called asynchronously if an error occurs
+       // or server returns response with an error status.
+       console.log("iFramely API response FAIL!");
+       console.log(response);
+     });
+ }
+
+$scope.iFramelyResult("http://ionicframework.com/docs/components/");
+$scope.iframelyHtml = $sce.trustAsHtml($scope.item);
+
+$scope.toTrustedHTML = function(html){
+  return $sce.trustAsHtml(html);
+}
+ // console.log($scope.iFramelyResult("http://ionicframework.com/docs/components/"));
+
 })
 
 .controller('SigninCtrl', function($rootScope, $scope, $ionicModal, $state, $ionicAuth, $ionicUser){
@@ -142,7 +174,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
   };
 })
 
-.controller('ChatCtrl', function($scope, $rootScope, $stateParams, $state, $ionicScrollDelegate, $window, Rooms, ChatMessages) {
+.controller('ChatCtrl', function($scope, $rootScope, $stateParams, $state, $ionicScrollDelegate, $http, Rooms, ChatMessages, $sce) {
 
   $rootScope.$on('$ionicView.beforeEnter', function() {
     $rootScope.hideTabs = true;
@@ -183,8 +215,10 @@ angular.module('starter.controllers', ['ionic.cloud'])
 
   $scope.sendChat = function(chat){
     if(chat != null && chat.message !=""){
+      $scope.sentMessageType = $scope.checkMessageType(chat.message);
       $scope.queryNamelessMessages.push().set({is_agent:false, sender_uid:$rootScope.user_uuid,text:chat.message,timestamp:firebase.database.ServerValue.TIMESTAMP});
       console.log("sent message");
+      console.log("sent message type is: "+$scope.sentMessageType);
       chat.message = "";
       $scope.queryOpenRooms.update({updated_at:firebase.database.ServerValue.TIMESTAMP});
       console.log("updated, updated at");
@@ -206,20 +240,79 @@ angular.module('starter.controllers', ['ionic.cloud'])
       console.log("user stops writing");
     }
   }
+
+  $scope.checkMessageType = function(message){
+    var urlpattern = "(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})";
+    if(message.match(urlpattern) != null){
+      var type = "link";
+    }else{
+      var type = "text";
+    }
+    return type;
+  }
+
+
+  $scope.renderMessage = function(message){
+    var messageType = $scope.checkMessageType(message);
+    if(messageType == "link"){
+      // $scope.iFramelyResult(message);
+      $scope.toRenderMessage = "<a href="+message+">"+message+"</a>";
+
+      if($scope.toRenderMessage == null){
+        $scope.toRenderMessage = "<a href="+message+">"+message+"</a>";
+      }
+    }
+    // else{
+    //   $scope.toRenderMessage = "<p>"+message+"</p>";
+    // }
+    // return $scope.toRenderMessage;
+  }
+
+  $scope.toTrustedHTML = function(html){
+    return $sce.trustAsHtml(html);
+  }
+
+  $scope.iFramelyResult = function(message){
+    var iFramelyRequestURL = "http://iframe.ly/api/oembed?url="+message+"&api_key=31d4151b543e7f5df7c092";
+    $http({
+      method: 'GET',
+      url: iFramelyRequestURL
+    }).then(function successCallback(response) {
+        // this callback will be called asynchronously
+        // when the response is available
+        // $scope.posts = response.data;
+        console.log("iFramely API response success!");
+        console.log(response.data);
+        // return response.data.html;
+      }, function errorCallback(response) {
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
+        console.log("iFramely API response FAIL!");
+        console.log(response);
+        return null
+      });
+  }
+  $scope.iFramelyResult("http://www.google.com");
+
+
 })
 
-.controller('ExploreCtrl', function($scope, $http) {
+.controller('ExploreCtrl', function($scope, $rootScope, $http) {
+
   $http({
     method: 'GET',
     url: 'https://fastjapan.com/en/wp-json/wp/v2/posts'
   }).then(function successCallback(response) {
       // this callback will be called asynchronously
       // when the response is available
-      $scope.posts = response;
+      $scope.posts = response.data;
       console.log("API response success!");
-      console.log($scope.$posts);
+      console.log($scope.posts);
+      console.log($scope.posts["0"]);
       for (post in $scope.posts){
-        console.log($scope.posts.title);
+        // console.log("test");
+        console.log($scope.posts[0]);
+        $scope.getFeaturedMedia($scope.posts[0].content.rendered);
       }
     }, function errorCallback(response) {
       // called asynchronously if an error occurs
@@ -227,6 +320,35 @@ angular.module('starter.controllers', ['ionic.cloud'])
       console.log("API response FAIL!");
       console.log("response");
     });
+
+  $scope.getFeaturedMedia = function(content){
+    var firstSlice = content.split('src=')[1];
+    var secondSlice = firstSlice.split('"')[1];
+    return secondSlice;
+  }
+})
+
+.controller('ArticleCtrl', function($scope, $rootScope, $stateParams, $http, $sce){
+  $scope.articleId = $stateParams.articleId;
+  $http({
+    method: 'GET',
+    url: 'https://fastjapan.com/en/wp-json/wp/v2/posts/'+$scope.articleId
+  }).then(function successCallback(response) {
+      // this callback will be called asynchronously
+      // when the response is available
+      $scope.article = response;
+      console.log("Article API response success!");
+      console.log($scope.article);
+    }, function errorCallback(response) {
+      // called asynchronously if an error occurs
+      // or server returns response with an error status.
+      console.log("API response FAIL!");
+      console.log("response");
+    });
+
+  $scope.toTrustedHTML = function(html){
+    return $sce.trustAsHtml(html);
+  }
 })
 
 .directive('hideTabs', function($rootScope) {
@@ -239,4 +361,16 @@ angular.module('starter.controllers', ['ionic.cloud'])
           });
       }
   };
-});
+})
+
+// Directive is required only when there's no full jQuery on the page
+.directive('renderIframely', ['$timeout', function ($timeout) {
+    return {
+        link: function ($scope, element, attrs) {
+            $timeout(function () {
+                // Run code after element is rendered
+                window.iframely && iframely.load();
+            }, 0, false);
+        }
+    };
+}]);

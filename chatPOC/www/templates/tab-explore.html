@@ -1,11 +1,12 @@
 <ion-view view-title="Explore">
   <ion-content>
     <ion-list>
-      <ion-item class="item item-thumbnail-left" ng-repeat="post in posts" type="item-text-wrap">
-        <img ng-src="">
-        <h3>{{posts.title.rendered}}</h3>
-        <p>{{posts.title}}</p>
+      <ion-item class="item item-thumbnail-left" ng-repeat="post in posts" href="#/tab/explore/{{post.id}}" type="item-text-wrap">
+        <img ng-src="{{getFeaturedMedia(post.content.rendered)}}">
+        <h3>{{post.title.rendered}}</h3>
+        <p>{{post.id}}</p>
+        <p>https://fastjapan.com/en/wp-json/wp/v2/media/{{post.id}}</p>
       </ion-item>
-    </ion-list>
+    </ion-list1>
   </ion-content>
 </ion-view>
