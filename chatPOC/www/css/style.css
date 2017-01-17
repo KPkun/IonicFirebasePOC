@@ -40,7 +40,12 @@
 
 body {
  -webkit-user-select: auto !important;
+ }
 .scroll {
-    -webkit-user-select: inherit;
-  }
+    /*-webkit-user-select: inherit;*/
+    height: 100%;
+}
+#map {
+    width: 100%;
+    height: 100%;
 }

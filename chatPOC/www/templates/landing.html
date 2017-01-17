@@ -28,11 +28,11 @@
     </ion-slide-box>
     -->
     <h3>Welcome</h3>
-    <a class="button button-block button-outline button-positive" ng-click=openBrowser()>In App Browser</a><br>
+    <!-- <a class="button button-block button-outline button-positive" ng-click=openBrowser()>In App Browser</a><br> -->
     <a class="button button-block button-outline button-positive" ng-click=fakelogin()>Connect with Facebook</a><br>
     <div ng-controller="LandingCtrl">
         <div render-iframely ng-bind-html="iframelyHtml"></div>
     </div>
-    <span ng-bind-html='toTrustedHTML(item)'>dada</span>
+    <div id="map" data-tap-disabled="true"></div>
   </ion-content>
 </ion-view>

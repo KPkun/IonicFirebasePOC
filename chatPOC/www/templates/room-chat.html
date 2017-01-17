@@ -16,7 +16,70 @@
         <div>
           <ul>
             <li><h2>{{chat.sender_uid}}</h2></li>
-            <li><span ng-bind-html='toTrustedHTML(renderMessage(chat.text))'></span></li>
+            <!-- <li><span ng-bind-html='toTrustedHTML(renderMessage(chat))'></span></li> -->
+            <li ng-if="chat.type=='rich'">
+              <div class="list card">
+                <div class="item item-avatar">
+                  <img src="{{chat.thumbnail_url}}">
+                  <h2>{{chat.title}}</h2>
+                  <a href="{{chat.text}}">{{chat.text}}</a>
+                </div>
+
+                <div class="item item-image">
+                  <img src="{{chat.thumbnail_url}}">
+                </div>
+
+                <a class="item item-icon-left assertive" href="#">
+                  {{chat.author}}
+                </a>
+
+                </div>
+            </li>
+
+            <li ng-if="chat.type=='video'">
+              <div class="list card">
+                <div class="item item-avatar">
+                  <img src="{{chat.thumbnail_url}}">
+                  <h2>{{chat.title}}</h2>
+                  <a href="{{chat.text}}">{{chat.text}}</a>
+                </div>
+
+                <div class="item item-image">
+                  <img src="{{chat.thumbnail_url}}">
+                </div>
+
+                <a class="item item-icon-left assertive" href="#">
+                  {{chat.author}}
+                </a>
+                </div>
+            </li>
+
+            <li ng-if="chat.type=='link'">
+              <div class="list card">
+                <div class="item item-avatar">
+                  <h2>{{chat.title}}</h2>
+                  <a href="{{chat.text}}">{{chat.text}}</a>
+                </div>
+
+                <div class="item item-image">
+                </div>
+
+                <a class="item item-icon-left assertive" href="#">
+                  {{chat.description}}
+                </a>
+
+                </div>
+            </li>
+
+            <li ng-if="chat.type=='simplelink'">
+              <a href="{{chat.text}}">{{chat.text}}</a>
+            </li>
+
+            <li ng-if="chat.type=='text'">
+              <p>{{chat.text}}</p>
+            </li>
+
+            <!-- <li><span>{{chat.text}}</span></li> -->
             <li><p style="font-size:8px;">Time: {{chat.timestamp}}</p></li>
           </ul>
         </div>
@@ -26,7 +89,79 @@
         <div style = "float:right">
           <ul>
             <li><h2 style="float:right">{{chat.sender_uid}}</h2></li><br>
-            <li style="float:right"><span ng-bind-html='toTrustedHTML(renderMessage(chat.text))'></span></li><br>
+            <!-- <li style="float:right"><span ng-bind-html='toTrustedHTML(renderMessage(chat))'></span></li><br> -->
+
+            <li style="float:right" ng-if="chat.type=='rich'">
+
+              <div class="list card">
+                <div class="item item-avatar">
+                  <img src="{{chat.thumbnail_url}}">
+                  <h2>{{chat.title}}</h2>
+                  <a href="{{chat.text}}">{{chat.text}}</a>
+                </div>
+
+                <div class="item item-image">
+                  <img src="{{chat.thumbnail_url}}">
+                </div>
+
+                <a class="item item-icon-left assertive" href="#">
+                  {{chat.author}}
+                </a>
+
+                </div>
+
+            </li>
+
+            <li style="float:right" ng-if="chat.type=='video'">
+
+              <div class="list card">
+                <div class="item item-avatar">
+                  <img src="{{chat.thumbnail_url}}">
+                  <h2>{{chat.title}}</h2>
+                  <a href="{{chat.text}}">{{chat.text}}</a>
+                </div>
+
+                <div class="item item-image">
+                  <img src="{{chat.thumbnail_url}}">
+                </div>
+
+                <a class="item item-icon-left assertive" href="#">
+                  {{chat.author}}
+                </a>
+
+                </div>
+
+            </li><br>
+
+            <li style="float:right" ng-if="chat.type=='link'">
+
+              <div class="list card">
+                <div class="item item-avatar">
+                  <h2>{{chat.title}}</h2>
+                  <a href="{{chat.text}}">{{chat.text}}</a>
+                </div>
+
+                <div class="item item-image">
+                </div>
+
+                <a class="item item-icon-left assertive" href="#">
+                  {{chat.description}}
+                </a>
+              </div>
+
+            </li><br>
+
+            <li style="float:right" ng-if="chat.type=='simplelink'">
+              <a href="{{chat.text}}">{{chat.text}}</a>
+            </li><br>
+
+            <li style="float:right" ng-if="chat.type=='text'">
+              <p>{{chat.text}}</p>
+            </li><br>
+
+            <br>
+
+            <!-- <li style="float:right"><span>{{chat.text}}</span></li><br> -->
             <li><p style="float:right; font-size:8px">Time: {{chat.timestamp}}</p></li>
           </ul>
         </div>
