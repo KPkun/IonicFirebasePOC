@@ -4,13 +4,13 @@
   The FriendsCtrl pulls data from the Friends service (service.js)
   The Friends service returns an array of friend data
 -->
-<ion-view view-title="{{room.name}}" ng-init="initMethods()" cache-view="false">
+<ion-view view-title="{{room.name}}" ng-init="initMethods()">
   <ion-content class="padding has-footer" style="height:80%" overflow-scroll="true">
     <!-- <img ng-src="{{room.logo}}" style="width: 64px; height: 64px">
     <p>
       {{room.lastText}}
     </p> -->
-    <div class="list" ng-repeat="chat in chats">
+    <div class="list" ng-repeat="chat in chatMessages">
       <div class="item item-avatar-left" ng-if="chat.is_agent==true" style="z-index:1000 !important;">
         <img src="./img/default_profile_pic.jpg">
         <div>

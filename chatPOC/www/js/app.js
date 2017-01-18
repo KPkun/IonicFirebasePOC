@@ -21,7 +21,7 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
     // for form inputs)
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-      cordova.plugins.Keyboard.disableScroll(true);
+      // cordova.plugins.Keyboard.disableScroll(true);
 
     }
     if (window.StatusBar) {
@@ -151,7 +151,6 @@ angular.module('starter', ['ionic', 'ionic.cloud', 'starter.controllers', 'start
     })
     .state('tab.chat', {
       url: '/rooms/:roomId',
-      params: { cache: null },
       views: {
         'tab-rooms': {
           templateUrl: 'templates/room-chat.html',

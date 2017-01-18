@@ -144,98 +144,113 @@ angular.module('starter.controllers', ['ionic.cloud'])
   };
 })
 
-.controller('ChatCtrl', function($scope, $rootScope, $stateParams, $state, $ionicScrollDelegate, $http, Rooms, ChatMessages, $sce, iFramelyResult, LocalChatMessages) {
+.controller('ChatCtrl', function($scope, $rootScope, $stateParams, $state, $ionicScrollDelegate, $interval, $http, Rooms, ChatMessages, $sce, iFramelyResult, LocalChatMessages) {
 
   $rootScope.$on('$ionicView.beforeEnter', function() {
     $rootScope.hideTabs = true;
+    $ionicScrollDelegate.scrollBottom();
+  });
+
+  $scope.$on('$ionicView.afterEnter', function(){
+    $ionicScrollDelegate.scrollBottom(true);
   });
 
   $scope.room = Rooms.get($stateParams.roomId);
   $scope.userName = $rootScope.userName;
   console.log($scope.userName);
 
-  // $scope.chat = "";
   $scope.queryOpenRooms = $rootScope.database.ref("/nameless_open_rooms/"+$rootScope.user_uuid);
   $scope.queryNamelessMessages = $rootScope.database.ref().child('nameless_messages/'+$rootScope.user_uuid+'/');
   $scope.queryAgents = $rootScope.database.ref("/agents_info/");
   $scope.queryChatMessages = $rootScope.database.ref('nameless_messages/'+$rootScope.user_uuid);
 
-  $scope.getChats = function(){
-    $scope.queryChatMessages.once('value').then(function(snapshot){
-      $scope.chats = snapshot.val();
+  $scope.getChats = function(count){
+    $scope.queryChatMessages.limitToLast(count).once('value').then(function(snapshot){
+      $scope.chatMessages = snapshot.val();
     });
   }
 
-  $scope.queryChatMessages.on('value',function(snapshot){
-    // $scope.queryNamelessMessages.push().set({is_agent:false, sender_uid:$rootScope.user_uuid,text:"fake update",timestamp:firebase.database.ServerValue.TIMESTAMP,type:"text"});
-    $scope.queryOpenRooms.update({user_got_new_message:true});
-    $scope.$apply(function(){
-      $scope.chats = snapshot.val();
-    });
+  // $interval(function(){
+  //   console.log("timeout working fine!");
+  // },500);
 
-    console.log($scope.chats);
-    console.log("new chat message");
+  $scope.queryChatMessages.limitToLast(20).on('value',function(snapshot){
+    $scope.queryOpenRooms.update({user_got_new_message:true});
+    // $scope.$apply(function(){
+    //   $scope.chats = snapshot.val();
+    // });
+    $scope.chatMessages = snapshot.val();
+    console.log($scope.chatMessages);
+    console.log("updated chat messages");
+    $ionicScrollDelegate.scrollBottom(true);
+  });
+
+  $scope.queryChatMessages.limitToLast(1).on('child_added', function(snapshot){
+    var currentChatMessage = snapshot.val();
+    var currentChatMessageKey = snapshot.key;
+    console.log("confirmed added child");
+    console.log(currentChatMessage);
+    console.log(currentChatMessageKey);
+    if(currentChatMessage.type == null){
+      var queryCurrentChatMessage = $rootScope.database.ref('nameless_messages/'+$rootScope.user_uuid+'/'+currentChatMessageKey);
+      var currentChatMessage = currentChatMessage.text;
+      console.log("setting type to text or link");
+
+      var currentChatType = $scope.checkMessageType(currentChatMessage);
+      queryCurrentChatMessage.update({type:currentChatType});
+
+      if(currentChatType == "simplelink"){
+          var iFramelyRequestURL = "http://iframe.ly/api/oembed?url="+currentChatMessage+"&api_key=31d4151b543e7f5df7c092";
+          $http({
+            method: 'GET',
+            url: iFramelyRequestURL
+          }).then(function successCallback(response) {
+            console.log("iFramely API response Success!");
+            console.log(response);
+            if(response.data.type == "rich"){
+              currentChatType = "rich";
+              var title = response.data.title;
+              var author = response.data.author;
+              var description = response.data.description;
+              var thumbnail_url = response.data.thumbnail_url;
+              var provider_name = response.data.provider_name;
+              queryCurrentChatMessage.update({type:currentChatType,title:title,description:description,author:author,thumbnail_url:thumbnail_url,provider_name:provider_name});
+            }
+            if(response.data.type == "video"){
+              currentChatType = "video";
+              var title = response.data.title;
+              var author = response.data.author;
+              var description = response.data.description;
+              var thumbnail_url = response.data.thumbnail_url;
+              var provider_name = response.data.provider_name;
+              queryCurrentChatMessage.update({type:currentChatType,title:title,description:description,author:author,thumbnail_url:thumbnail_url,provider_name:provider_name});
+            }
+            if(response.data.type == "link"){
+              currentChatType = "link";
+              var title = response.data.title;
+              var description = response.data.description;
+              queryCurrentChatMessage.update({type:currentChatType,title:title,description:description});
+            }
+            },function errorCallback(response) {
+              // called asynchronously if an error occurs
+              // or server returns response with an error status.
+              console.log("iFramely API response FAIL!");
+              console.log(response);
+            });
+        }
+      }
   });
 
   $scope.initMethods = function(){
     console.log("get chats on init");
-    // $scope.getChats();
-    $ionicScrollDelegate.scrollBottom();
+    $scope.getChats(20);
     $scope.queryOpenRooms.update({user_read_at:firebase.database.ServerValue.TIMESTAMP});
     console.log("updated last seen");
   }
 
   $scope.sendChat = function(chat){
     if(chat != null && chat.message !=""){
-      var sentMessageType = $scope.checkMessageType(chat.message);
-      var message = chat.message;
-      if(sentMessageType == "simplelink"){
-        var iFramelyRequestURL = "http://iframe.ly/api/oembed?url="+message+"&api_key=31d4151b543e7f5df7c092";
-        $http({
-          method: 'GET',
-          url: iFramelyRequestURL
-        }).then(function successCallback(response) {
-          console.log("iFramely API response Success!");
-          console.log(response);
-          if(response.data.type == "rich"){
-            sentMessageType = "rich";
-            var title = response.data.title;
-            var author = response.data.author;
-            var description = response.data.description;
-            var thumbnail_url = response.data.thumbnail_url;
-            var provider_name = response.data.provider_name;
-            $scope.queryNamelessMessages.push().set({is_agent:false, sender_uid:$rootScope.user_uuid,text:message,timestamp:firebase.database.ServerValue.TIMESTAMP,type:sentMessageType,title:title,description:description,author:author,thumbnail_url:thumbnail_url,provider_name:provider_name});
-          }
-          if(response.data.type == "video"){
-            sentMessageType = "video";
-            var title = response.data.title;
-            var author = response.data.author;
-            var description = response.data.description;
-            var thumbnail_url = response.data.thumbnail_url;
-            var provider_name = response.data.provider_name;
-            $scope.queryNamelessMessages.push().set({is_agent:false, sender_uid:$rootScope.user_uuid,text:message,timestamp:firebase.database.ServerValue.TIMESTAMP,type:sentMessageType,title:title,description:description,author:author,thumbnail_url:thumbnail_url,provider_name:provider_name});
-          }
-          if(response.data.type == "link"){
-            sentMessageType = "link";
-            var title = response.data.title;
-            var description = response.data.description;
-            $scope.queryNamelessMessages.push().set({is_agent:false, sender_uid:$rootScope.user_uuid,text:message,timestamp:firebase.database.ServerValue.TIMESTAMP,type:sentMessageType,title:title,description:description});
-          }
-          },function errorCallback(response) {
-            // called asynchronously if an error occurs
-            // or server returns response with an error status.
-            console.log("iFramely API response FAIL!");
-            console.log(response);
-            sentMessageType = "simplelink";
-            $scope.queryNamelessMessages.push().set({is_agent:false, sender_uid:$rootScope.user_uuid,text:message,timestamp:firebase.database.ServerValue.TIMESTAMP, type:sentMessageType});
-            // $scope.toRenderMessage = iFramelyResult.getResponse(message);
-          });
-      }else{
-        sentMessageType = "text";
-        $scope.queryNamelessMessages.push().set({is_agent:false, sender_uid:$rootScope.user_uuid,text:message,timestamp:firebase.database.ServerValue.TIMESTAMP, type:sentMessageType});
-      }
-
-      // $scope.queryNamelessMessages.push().set({is_agent:false, sender_uid:$rootScope.user_uuid,text:chat.message,timestamp:firebase.database.ServerValue.TIMESTAMP, type:sentMessageType});
+      $scope.queryNamelessMessages.push().set({is_agent:false, sender_uid:$rootScope.user_uuid,text:chat.message,timestamp:firebase.database.ServerValue.TIMESTAMP});
       console.log("sent message");
       console.log("sent message type is: "+$scope.sentMessageType);
       chat.message = "";
@@ -270,27 +285,6 @@ angular.module('starter.controllers', ['ionic.cloud'])
     return type;
   }
 
-  $scope.renderMessage = function(chat){
-    var toRenderMessage = "";
-    if(chat.type == "rich"){
-      toRenderMessage = "<a href="+chat.text+">"+chat.text+"</a>";
-    }
-    if(chat.type == "video"){
-      toRenderMessage = "<a href="+chat.text+">"+chat.text+"</a>";
-    }
-    if(chat.type == "link"){
-      toRenderMessage = "<a href="+chat.text+">"+chat.text+"</a>";
-    }
-    if(chat.type == "simplelink"){
-      toRenderMessage = "<a href="+chat.text+">"+chat.text+"</a>";
-    }
-    if(chat.type == "text"){
-      toRenderMessage = "<p>"+chat.text+"</p>";
-    }
-    // console.log($scope.toRenderMessage);
-    return toRenderMessage;
-  }
-
   $scope.toTrustedHTML = function(html){
     return $sce.trustAsHtml(html);
   }
@@ -310,7 +304,6 @@ $http({
     console.log($scope.posts);
     console.log($scope.posts["0"]);
     for (post in $scope.posts){
-      // console.log("test");
       console.log($scope.posts[0]);
       $scope.getFeaturedMedia($scope.posts[0].content.rendered);
     }
@@ -338,7 +331,6 @@ $http({
       // when the response is available
       $scope.article = response;
       console.log("Article API response success!");
-      // console.log($scope.article);
     }, function errorCallback(response) {
       // called asynchronously if an error occurs
       // or server returns response with an error status.
@@ -364,13 +356,13 @@ $http({
 })
 
 // Directive is required only when there's no full jQuery on the page
-.directive('renderIframely', ['$timeout', function ($timeout) {
-    return {
-        link: function ($scope, element, attrs) {
-            $timeout(function () {
-                // Run code after element is rendered
-                window.iframely && iframely.load();
-            }, 0, false);
-        }
-    };
-}]);
+// .directive('renderIframely', ['$timeout', function ($timeout) {
+//     return {
+//         link: function ($scope, element, attrs) {
+//             $timeout(function () {
+//                 // Run code after element is rendered
+//                 window.iframely && iframely.load();
+//             }, 0, false);
+//         }
+//     };
+// }]);
