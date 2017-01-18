@@ -144,7 +144,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
   };
 })
 
-.controller('ChatCtrl', function($scope, $rootScope, $stateParams, $state, $ionicScrollDelegate, $interval, $http, Rooms, ChatMessages, $sce, iFramelyResult, LocalChatMessages) {
+.controller('ChatCtrl', function($scope, $rootScope, $stateParams, $state, $ionicScrollDelegate, $timeout, $http, Rooms, ChatMessages, $sce, iFramelyResult, LocalChatMessages) {
 
   $rootScope.$on('$ionicView.beforeEnter', function() {
     $rootScope.hideTabs = true;
@@ -173,17 +173,6 @@ angular.module('starter.controllers', ['ionic.cloud'])
   // $interval(function(){
   //   console.log("timeout working fine!");
   // },500);
-
-  $scope.queryChatMessages.limitToLast(20).on('value',function(snapshot){
-    $scope.queryOpenRooms.update({user_got_new_message:true});
-    // $scope.$apply(function(){
-    //   $scope.chats = snapshot.val();
-    // });
-    $scope.chatMessages = snapshot.val();
-    console.log($scope.chatMessages);
-    console.log("updated chat messages");
-    $ionicScrollDelegate.scrollBottom(true);
-  });
 
   $scope.queryChatMessages.limitToLast(1).on('child_added', function(snapshot){
     var currentChatMessage = snapshot.val();
@@ -239,6 +228,23 @@ angular.module('starter.controllers', ['ionic.cloud'])
             });
         }
       }
+  });
+
+  $scope.queryChatMessages.limitToLast(20).on('value',function(snapshot){
+    $scope.queryOpenRooms.update({user_got_new_message:true});
+    // if(!$scope.$$phase){
+
+    // }
+    $timeout(function(){
+        //any code in here will automatically have an apply run afterwards
+        $scope.$apply(function(){
+          $scope.chatMessages = snapshot.val();
+        });
+    });
+    $scope.chatMessages = snapshot.val();
+    console.log($scope.chatMessages);
+    console.log("updated chat messages");
+    $ionicScrollDelegate.scrollBottom(true);
   });
 
   $scope.initMethods = function(){
