@@ -148,11 +148,16 @@ angular.module('starter.controllers', ['ionic.cloud'])
 
   $rootScope.$on('$ionicView.beforeEnter', function() {
     $rootScope.hideTabs = true;
-    $ionicScrollDelegate.scrollBottom();
+    // $ionicScrollDelegate.scrollBottom(true);
+    // $timeout(function(){
+      // $ionicScrollDelegate.scrollBottom();
+    // });
   });
 
   $scope.$on('$ionicView.afterEnter', function(){
-    $ionicScrollDelegate.scrollBottom(true);
+    $timeout(function(){
+      $ionicScrollDelegate.scrollBottom();
+    },500);
   });
 
   $scope.room = Rooms.get($stateParams.roomId);
@@ -199,20 +204,20 @@ angular.module('starter.controllers', ['ionic.cloud'])
             if(response.data.type == "rich"){
               currentChatType = "rich";
               var title = response.data.title;
-              var author = response.data.author;
+              // var author = response.data.author;
               var description = response.data.description;
               var thumbnail_url = response.data.thumbnail_url;
-              var provider_name = response.data.provider_name;
-              queryCurrentChatMessage.update({type:currentChatType,title:title,description:description,author:author,thumbnail_url:thumbnail_url,provider_name:provider_name});
+              // var provider_name = response.data.provider_name;
+              queryCurrentChatMessage.update({type:currentChatType,title:title,description:description,thumbnail_url:thumbnail_url});
             }
             if(response.data.type == "video"){
               currentChatType = "video";
               var title = response.data.title;
-              var author = response.data.author;
+              // var author = response.data.author;
               var description = response.data.description;
               var thumbnail_url = response.data.thumbnail_url;
-              var provider_name = response.data.provider_name;
-              queryCurrentChatMessage.update({type:currentChatType,title:title,description:description,author:author,thumbnail_url:thumbnail_url,provider_name:provider_name});
+              // var provider_name = response.data.provider_name;
+              queryCurrentChatMessage.update({type:currentChatType,title:title,description:description,thumbnail_url:thumbnail_url});
             }
             if(response.data.type == "link"){
               currentChatType = "link";
@@ -228,6 +233,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
             });
         }
       }
+      // $ionicScrollDelegate.scrollBottom(true);
   });
 
   $scope.queryChatMessages.limitToLast(20).on('value',function(snapshot){
@@ -238,13 +244,17 @@ angular.module('starter.controllers', ['ionic.cloud'])
     $timeout(function(){
         //any code in here will automatically have an apply run afterwards
         $scope.$apply(function(){
-          $scope.chatMessages = snapshot.val();
+          // $scope.chatMessages = snapshot.val();
+          // $ionicScrollDelegate.scrollBottom(true);
         });
     });
     $scope.chatMessages = snapshot.val();
     console.log($scope.chatMessages);
     console.log("updated chat messages");
-    $ionicScrollDelegate.scrollBottom(true);
+    $ionicScrollDelegate.scrollBottom();
+    // $timeout(function(){
+    //   $ionicScrollDelegate.scrollBottom();
+    // }, 300);
   });
 
   $scope.initMethods = function(){
@@ -289,6 +299,14 @@ angular.module('starter.controllers', ['ionic.cloud'])
       var type = "text";
     }
     return type;
+  }
+
+  $scope.getDate = function(timestamp){
+    var myDate = new Date(timestamp*1000);
+    // var formatedTime=myDate.toJSON();
+    // console.log(formatedTime);
+    // console.log(myDate);
+    return myDate;
   }
 
   $scope.toTrustedHTML = function(html){
