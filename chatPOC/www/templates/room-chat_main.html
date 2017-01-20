@@ -1,0 +1,332 @@
+<!--
+  This template loads for the 'tab.friend-detail' state (app.js)
+  'friend' is a $scope variable created in the FriendsCtrl controller (controllers.js)
+  The FriendsCtrl pulls data from the Friends service (service.js)
+  The Friends service returns an array of friend data
+-->
+<ion-view view-title="{{room.name}}" ng-init="initMethods()">
+  <ion-content class="padding has-footer" style="height:100%" overflow-scroll="true">
+    <!-- <img ng-src="{{room.logo}}" style="width: 64px; height: 64px">
+    <p>
+      {{room.lastText}}
+    </p> -->
+
+    <!-- <div class="card message-bubble-left">
+      <div class="item item-text-wrap">
+        <div>
+          This is a basic Card which contains an item that has wrapping text.
+        </div>
+      </div>
+    </div>
+
+    <div class="card message-bubble-right">
+      <div class="item item-text-wrap">
+        <div>
+          This is a basic Card which con.
+        </div>
+      </div>
+    </div>
+
+    <div class="card message-bubble-left">
+      <div class="item item-text-wrap">
+        <div>
+          This is a basic Card which contains an item that has none.
+        </div>
+      </div>
+    </div>
+
+    <div class="card message-bubble-left">
+      <div class="item item-text-wrap">
+        <div>
+          This.
+        </div>
+      </div>
+    </div> -->
+
+    <ion-list>
+      <ion-item class="message-bubbles" ng-repeat="chat in chatMessages">
+
+        <div class="card message-holder-left" ng-if="chat.is_agent==true">
+          <div class="item item-text-wrap message-bubble-left">
+            <div ng-if="chat.type=='text'">
+              <p class="nonuser-message-text">{{chat.text}}</p>
+            </div>
+            <div ng-if="chat.type=='simplelink'">
+              <a class="nonuser-message-simplelink" href="{{chat.text}}">{{chat.text}}</a>
+            </div>
+            <div ng-if="chat.type=='link'" class="message-rich">
+              <div class="card oEmbed-card">
+                <div class="item">
+                  <a class="nonuser-message-simplelink" href="{{chat.text}}">{{chat.text}}</a>
+                </div>
+                <div class="item" ng-if="chat.description!==null">
+                  <a href="{{chat.text}}" class="nonuser-message-text"><h4 class="nonuser-message-text">{{chat.title}}</h4></a>
+                  <!-- <h4 class="nonuser-message-text">{{chat.title}}</h4> -->
+                  <p class="nonuser-message-text">{{chat.description}}</p>
+                </div>
+              </div>
+            </div>
+            <div ng-if="chat.type=='rich'" class="message-rich">
+              <div class="card oEmbed-card">
+                <div class="item">
+                  <a class="nonuser-message-simplelink" href="{{chat.text}}">{{chat.text}}</a>
+                </div>
+                <div class="item item-text-wrap">
+                  <img src="{{chat.thumbnail_url}}">
+                </div>
+                <div class="item">
+                  <a href="{{chat.text}}" class="nonuser-message-text"><h4 class="nonuser-message-text">{{chat.title}}</h4></a>
+                  <!-- <h4 class="nonuser-message-text">{{chat.title}}</h4> -->
+                  <p class="nonuser-message-text">{{chat.description}}</p>
+                </div>
+              </div>
+            </div>
+            <div ng-if="chat.type=='video'" class="message-rich">
+              <div class="card oEmbed-card">
+                <div class="item">
+                  <a class="nonuser-message-simplelink" href="{{chat.text}}">{{chat.text}}</a>
+                </div>
+                <div class="item item-text-wrap">
+                  <img src="{{chat.thumbnail_url}}">
+                </div>
+                <div class="item">
+                  <a href="{{chat.text}}" class="nonuser-message-text"><h4 class="nonuser-message-text">{{chat.title}}</h4></a>
+                  <!-- <h4 class="nonuser-message-text">{{chat.title}}</h4> -->
+                  <p class="nonuser-message-text">{{chat.description}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="agent-name">
+            <h3>{{chat.sender_uid}}</h3>
+            <h4>Fast Japan</h4>
+          </div> -->
+        </div>
+
+        <div class="card message-holder-right" ng-if="chat.is_agent==false">
+          <div class="item item-text-wrap message-bubble-right">
+              <div ng-if="chat.type=='text'">
+                <p class="user-message-text">{{chat.text}}</p>
+              </div>
+              <div ng-if="chat.type=='simplelink'">
+                <a class="user-message-simplelink" href="{{chat.text}}">{{chat.text}}</a>
+              </div>
+              <div ng-if="chat.type=='link'" class="message-rich">
+                <div class="card oEmbed-card">
+                  <div class="item">
+                    <a class="user-message-simplelink" href="{{chat.text}}">{{chat.text}}</a>
+                  </div>
+                  <div class="item" ng-if="chat.description!==null">
+                    <a href="{{chat.text}}" class="user-message-text"><h4 class="user-message-text">{{chat.title}}</h4></a>
+                    <!-- <h4 class="user-message-text">{{chat.title}}</h4> -->
+                    <p class="user-message-text">{{chat.description}}</p>
+                  </div>
+                </div>
+              </div>
+              <div ng-if="chat.type=='rich'" class="message-rich">
+                <div class="card oEmbed-card">
+                  <div class="item">
+                    <a class="user-message-simplelink" href="{{chat.text}}">{{chat.text}}</a>
+                  </div>
+                  <div class="item item-text-wrap">
+                    <img src="{{chat.thumbnail_url}}">
+                  </div>
+                  <div class="item">
+                    <a href="{{chat.text}}" class="user-message-text"><h4 class="user-message-text">{{chat.title}}</h4></a>
+                    <!-- <h4 class="user-message-text">{{chat.title}}</h4> -->
+                    <p class="user-message-text">{{chat.description}}</p>
+                  </div>
+                </div>
+              </div>
+              <div ng-if="chat.type=='video'" class="message-rich">
+                <div class="card oEmbed-card">
+                  <div class="item">
+                    <a class="user-message-simplelink" href="{{chat.text}}">{{chat.text}}</a>
+                  </div>
+                  <div class="item item-text-wrap">
+                    <img src="{{chat.thumbnail_url}}">
+                  </div>
+                  <div class="item">
+                    <a href="{{chat.text}}" class="user-message-text"><h4 class="user-message-text">{{chat.title}}</h4></a>
+                    <!-- <h4 class="user-message-text">{{chat.title}}</h4> -->
+                    <p class="user-message-text">{{chat.description}}</p>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+
+      </ion-item>
+    </ion-list>
+
+    <!-- <div class="list" ng-repeat="chat in chatMessages">
+
+      <div class="item item-avatar-left" ng-if="chat.is_agent==true">
+        <img src="./img/default_profile_pic.jpg">
+        <div>
+          <ul>
+            <li><h2>{{chat.sender_uid}}</h2></li>
+            <li ng-if="chat.type=='rich'">
+              <div class="list card">
+                <div class="item item-avatar">
+                  <img src="{{chat.thumbnail_url}}">
+                  <h2>{{chat.title}}</h2>
+                  <a href="{{chat.text}}">{{chat.text}}</a>
+                </div>
+
+                <div class="item item-image">
+                  <img src="{{chat.thumbnail_url}}">
+                </div>
+
+                <a class="item item-icon-left assertive" href="#">
+                  {{chat.author}}
+                </a>
+
+                </div>
+            </li>
+
+            <li ng-if="chat.type=='video'">
+              <div class="list card">
+                <div class="item item-avatar">
+                  <img src="{{chat.thumbnail_url}}">
+                  <h2>{{chat.title}}</h2>
+                  <a href="{{chat.text}}">{{chat.text}}</a>
+                </div>
+
+                <div class="item item-image">
+                  <img src="{{chat.thumbnail_url}}">
+                </div>
+
+                <a class="item item-icon-left assertive" href="#">
+                  {{chat.author}}
+                </a>
+                </div>
+            </li>
+
+            <li ng-if="chat.type=='link'">
+              <div class="list card">
+                <div class="item item-avatar">
+                  <h2>{{chat.title}}</h2>
+                  <a href="{{chat.text}}">{{chat.text}}</a>
+                </div>
+
+                <div class="item item-image">
+                </div>
+
+                <a class="item item-icon-left assertive" href="#">
+                  {{chat.description}}
+                </a>
+
+                </div>
+            </li>
+
+            <li ng-if="chat.type=='simplelink'">
+              <a href="{{chat.text}}">{{chat.text}}</a>
+            </li>
+
+            <li ng-if="chat.type=='text'">
+              <p>{{chat.text}}</p>
+            </li>
+
+            <li><p style="font-size:8px;">Time: {{getDate(chat.timestamp)}}</p></li>
+          </ul>
+        </div>
+      </div>
+      <div class="item item-avatar-right" ng-if="chat.is_agent==false">
+        <img src="./img/default_profile_pic.jpg">
+        <div style = "float:right">
+          <ul>
+            <li><h2 style="float:right">{{chat.sender_uid}}</h2></li><br>
+
+            <li style="float:right" ng-if="chat.type=='rich'">
+
+              <div class="list card">
+                <div class="item item-avatar">
+                  <img src="{{chat.thumbnail_url}}">
+                  <h2>{{chat.title}}</h2>
+                  <a href="{{chat.text}}">{{chat.text}}</a>
+                </div>
+
+                <div class="item item-image">
+                  <img src="{{chat.thumbnail_url}}">
+                </div>
+
+                <a class="item item-icon-left assertive" href="#">
+                  {{chat.author}}
+                </a>
+
+                </div>
+
+            </li>
+
+            <li style="float:right" ng-if="chat.type=='video'">
+
+              <div class="list card">
+                <div class="item item-avatar">
+                  <img src="{{chat.thumbnail_url}}">
+                  <h2>{{chat.title}}</h2>
+                  <a href="{{chat.text}}">{{chat.text}}</a>
+                </div>
+
+                <div class="item item-image">
+                  <img src="{{chat.thumbnail_url}}">
+                </div>
+
+                <a class="item item-icon-left assertive" href="#">
+                  {{chat.author}}
+                </a>
+
+                </div>
+
+            </li><br>
+
+            <li style="float:right" ng-if="chat.type=='link'">
+
+              <div class="list card">
+                <div class="item item-avatar">
+                  <h2>{{chat.title}}</h2>
+                  <a href="{{chat.text}}">{{chat.text}}</a>
+                </div>
+
+                <div class="item item-image">
+                </div>
+
+                <a class="item item-icon-left assertive" href="#">
+                  {{chat.description}}
+                </a>
+              </div>
+
+            </li><br>
+
+            <li style="float:right" ng-if="chat.type=='simplelink'">
+              <a href="{{chat.text}}">{{chat.text}}</a>
+            </li><br>
+
+            <li style="float:right" ng-if="chat.type=='text'">
+              <p>{{chat.text}}</p>
+            </li><br>
+
+            <br>
+
+            <li><p style="font-size:8px;">Time: {{getDate(chat.timestamp)}}</p></li>
+          </ul>
+        </div>
+      </div>
+    </div> -->
+
+
+  <div style="position: absolute; bottom: 0px; width: 100%">
+    <form>
+      <div class="list">
+        <div class="item item-input-inset">
+          <label class="item-input-wrapper">
+            <input type="text" placeholder="message" ng-model="chat.message" ng-change="isWriting(chat)">
+          </label>
+          <button class="button button-positive ion ion-chatbubbles" ng-click="sendChat(chat)">
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  </ion-content>
+</ion-view>

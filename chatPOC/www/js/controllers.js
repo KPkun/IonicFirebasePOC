@@ -155,9 +155,15 @@ angular.module('starter.controllers', ['ionic.cloud'])
   });
 
   $scope.$on('$ionicView.afterEnter', function(){
+    var viewScroll = $ionicScrollDelegate.$getByHandle('userMessageScroll');
     $timeout(function(){
-      $ionicScrollDelegate.scrollBottom();
+      // --------------------here-----------------
+      // $ionicScrollDelegate.scrollBottom();
     },500);
+    $timeout(function(){
+      // --------------------here-----------------
+      viewScroll.scrollBottom();
+    },0);
   });
 
   $scope.room = Rooms.get($stateParams.roomId);
@@ -251,6 +257,7 @@ angular.module('starter.controllers', ['ionic.cloud'])
     $scope.chatMessages = snapshot.val();
     console.log($scope.chatMessages);
     console.log("updated chat messages");
+    // -----------------here------------------
     $ionicScrollDelegate.scrollBottom();
     // $timeout(function(){
     //   $ionicScrollDelegate.scrollBottom();
@@ -289,6 +296,18 @@ angular.module('starter.controllers', ['ionic.cloud'])
       $scope.queryOpenRooms.update({user_input_text:chat.message});
       console.log("user stops writing");
     }
+  }
+
+  $scope.inputClick = function(){
+    $ionicScrollDelegate.scrollBottom();
+  }
+
+  $scope.inputEnter = function(){
+    $ionicScrollDelegate.scrollBottom();
+  }
+
+  $scope.inputExit = function(){
+    $ionicScrollDelegate.scrollBottom();
   }
 
   $scope.checkMessageType = function(messageToMatch){
@@ -379,6 +398,19 @@ $http({
   };
 })
 
+.directive('ngEnter', function () {
+    return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if(event.which === 13) {
+                scope.$apply(function (){
+                    scope.$eval(attrs.ngEnter);
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
+});
 // Directive is required only when there's no full jQuery on the page
 // .directive('renderIframely', ['$timeout', function ($timeout) {
 //     return {
